@@ -1,7 +1,7 @@
 let questions = [];
 
 async function fetchQuestions() {
-    const response = await fetch('https://opentdb.com/api.php?amount=5&category=18&difficulty=easy&type=multiple');
+    const response = await fetch('https://opentdb.com/api.php?amount=3&category=18&difficulty=easy&type=multiple');
     const data = await response.json();
 
     questions = data.results.map(result => ({
@@ -31,7 +31,18 @@ function displayQuestions() {
     questions.forEach((question) =>{
         const tr = document.createElement("tr");
         const td = document.createElement("td");
-        td.textContent = question.question;
+
+        switch(question.difficulty) {
+            case "easy":
+                td.textContent = 100;
+                break;
+            case "medium":
+                td.textContent = 200;
+                break;
+            case "hard":
+                td.textContent = 300;
+                break;
+        }
 
         tr.appendChild(td);
         tbody.appendChild(tr);
