@@ -12,6 +12,33 @@ async function fetchQuestions() {
         correctAnswer: result.correct_answer,
         incorrectAnswers: result.incorrect_answers
     }));
+
+    displayQuestions();
+}
+
+function displayQuestions() {
+    const table = document.createElement("table");
+
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    const th = document.createElement("th");
+    th.textContent = questions[0].category;
+    headerRow.appendChild(th);
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    questions.forEach((question) =>{
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.textContent = question.question;
+
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    document.body.appendChild(table);
 }
 
 fetchQuestions();
