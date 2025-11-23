@@ -1,18 +1,17 @@
-let question = {};
+let questions = [];
 
-async function fetchQuestion() {
-    const response = await fetch('https://opentdb.com/api.php?amount=1&category=18&difficulty=easy&type=multiple');
+async function fetchQuestions() {
+    const response = await fetch('https://opentdb.com/api.php?amount=5&category=18&difficulty=easy&type=multiple');
     const data = await response.json();
-    const result = data.results[0];
 
-    question = {
+    questions = data.results.map(result => ({
         type: result.type,
         difficulty: result.difficulty,
         category: result.category,
         question: result.question,
         correctAnswer: result.correct_answer,
         incorrectAnswers: result.incorrect_answers
-    };
+    }));
 }
 
-fetchQuestion();
+fetchQuestions();
