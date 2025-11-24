@@ -1,7 +1,7 @@
 let questions = [];
 
 async function fetchQuestions() {
-    const response = await fetch('https://opentdb.com/api.php?amount=3&category=18&difficulty=easy&type=multiple');
+    const response = await fetch(`https://opentdb.com/api.php?amount=3&category=${generateRandomCategory()}&difficulty=easy&type=multiple`);
     const data = await response.json();
 
     questions = data.results.map(result => ({
@@ -50,6 +50,11 @@ function displayQuestions() {
 
     table.appendChild(tbody);
     document.body.appendChild(table);
+}
+
+function generateRandomCategory() {
+    const min = 1, max = 24;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 fetchQuestions();
