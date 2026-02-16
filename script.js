@@ -35,7 +35,6 @@ async function fetchQuestions() {
     console.log(questions);
 }
 
-// TODO: Improve styles
 function displayQuestions() {
     const table = document.createElement("table");
     const thead = document.createElement("thead");
