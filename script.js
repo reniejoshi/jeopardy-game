@@ -3,44 +3,56 @@ const columns = 3;
 
 let questions = [];
 
+// TODO: Add progress bar
 async function fetchQuestions() {
-    try {
-        for (let i = 0; i < columns; i++) {
-            const response = await fetch(`https://opentdb.com/api.php?amount=3&category=${generateRandomCategory()}&difficulty=easy&type=multiple`);
-            const data = await response.json();
-            console.log(data);
+    for (let i = 0; i < columns; i++) {
+        const response = await fetch(`https://opentdb.com/api.php?amount=3&category=${generateRandomCategory()}&difficulty=easy&type=multiple`);
+        const results = (await response.json()).results;
+        console.log("Response #" + i + ":");
+        console.log(results);
 
-            questions.push(data.results.map(result => ({
-                type: result.type,
-                difficulty: result.difficulty,
-                category: result.category,
-                question: result.question,
-                correctAnswer: result.correct_answer,
-                incorrectAnswers: result.incorrect_answers
-            })));
+        if (results.length == 0) {
+            i--;
+            await delay(6000);
+            continue;
         }
 
-        displayQuestions();
-    } catch (error) {
-        console.error("Error in fetchQuestions():", error);
+        questions.push(results.map(result => ({
+            type: result.type,
+            difficulty: result.difficulty,
+            category: result.category,
+            question: result.question,
+            correctAnswer: result.correct_answer,
+            incorrectAnswers: result.incorrect_answers
+        })));
+        
+        if (i < columns - 1) {
+            await delay(6000);
+        }
     }
+
+    console.log("questions:");
+    console.log(questions);
 }
 
+// TODO: Improve styles
 function displayQuestions() {
     const table = document.createElement("table");
     const thead = document.createElement("thead");
+    const tbody = document.createElement("tbody");
 
+    const headerRow = document.createElement("tr");
     for (let i = 0; i < columns; i++) {
-        const headerRow = document.createElement("tr");
         const th = document.createElement("th");
-        th.textContent = questions[i].category;
+        th.textContent = questions[i][0].category;
         headerRow.appendChild(th);
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
+    }
+    thead.appendChild(headerRow);
 
-        const tbody = document.createElement("tbody");
-        questions.forEach((question) =>{
-            const tr = document.createElement("tr");
+    questions.forEach(questionsColumn => {
+        const tr = document.createElement("tr");
+
+        questionsColumn.forEach(question => {
             const td = document.createElement("td");
 
             switch(question.difficulty) {
@@ -56,10 +68,12 @@ function displayQuestions() {
             }
 
             tr.appendChild(td);
-            tbody.appendChild(tr);
         });
-    }
-    
+
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(thead);
     table.appendChild(tbody);
     document.body.appendChild(table);
 }
@@ -69,4 +83,13 @@ function generateRandomCategory() {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-fetchQuestions();
+function delay(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+
+async function playJeopardyGame() {
+    await fetchQuestions();
+    displayQuestions();
+}
+
+window.addEventListener('load', playJeopardyGame);
