@@ -24,3 +24,19 @@ th, td {
     font-size: 15px;
     color: white;
 }
+
+.modal {
+    /*display: none;*/
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 1;
+    color: black;
+}
+
+.modal-content {
+    height: fit-content;
+    background-color: white;
+    margin: 5% auto;
+    padding: 2em 5em;
+}

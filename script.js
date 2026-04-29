@@ -35,7 +35,7 @@ async function fetchQuestions() {
     console.log(questions);
 }
 
-function displayQuestions() {
+function displayQuestionsTable() {
     const table = document.createElement("table");
     const thead = document.createElement("thead");
     const tbody = document.createElement("tbody");
@@ -66,6 +66,7 @@ function displayQuestions() {
                     break;
             }
 
+            td.addEventListener('click', displayQuestion);
             tr.appendChild(td);
         });
 
@@ -75,6 +76,22 @@ function displayQuestions() {
     table.appendChild(thead);
     table.appendChild(tbody);
     document.body.appendChild(table);
+}
+
+function displayQuestion(event) {
+    const modal = document.createElement('div');
+    const modalContent = document.createElement('div');
+
+    modal.classList.add('modal');
+    modalContent.classList.add('modal-content');
+
+    modal.append(modalContent);
+    document.body.append(modal);
+
+    const cell = event.target;
+    const cellRow = cell.closest('tr').rowIndex;
+    const cellColumn = cell.cellIndex;
+    console.log(`cell row: ${cellRow}, cell column: ${cellColumn}`);
 }
 
 function generateRandomCategory() {
@@ -88,7 +105,7 @@ function delay(milliseconds) {
 
 async function playJeopardyGame() {
     await fetchQuestions();
-    displayQuestions();
+    displayQuestionsTable();
 }
 
 window.addEventListener('load', playJeopardyGame);
