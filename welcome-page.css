@@ -1,0 +1,37 @@
+* {
+    font-family: var(--text-font);
+}
+
+body {
+    background-color: var(--background-main);
+    margin: 0;
+    padding: 0;
+}
+
+.welcome-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: var(--text-primary);
+}
+
+#name-input {
+    padding: 10px;
+    font-size: 16px;
+    border: var(--ui-border);
+    border-radius: 10px;
+    margin-right: 20px;
+    background-color: var(--white);
+}
+
+#start-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: var(--white);
+    color: var(--text-black );
+    border: var(--ui-border);
+    border-radius: 10px;
+    cursor: pointer;
+}

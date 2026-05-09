@@ -1,0 +1,15 @@
+:root {
+    --background-main: #154360;
+    --background-card: #21618C;
+
+    --blue: #1B4F72;
+    --gold: #D4AC0D;
+    --white: #FDFEFE;
+    --green: #239B56;
+
+    --text-white: #F4F6F7;
+    --text-black: #1C2833;
+    --ui-border: 2px solid #566573;
+
+    --text-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
