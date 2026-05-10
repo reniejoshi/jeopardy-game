@@ -393,10 +393,8 @@ const data = [
     }
 ];
 
-api.get('/api', (req, res) => {
+api.get('/', (req, res) => {
     res.json(data);
 });
 
-api.listen(3000, () => {
-    console.log('API is running on port 3000');
-});
+module.exports = api;
