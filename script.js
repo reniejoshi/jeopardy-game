@@ -1,38 +1,31 @@
 const rows = 3;
-const columns = 3;
+const columns = 7;
 
-let questions = [];
+let cards = [];
 
-// TODO: Add progress bar
 async function fetchQuestions() {
-    for (let i = 0; i < columns; i++) {
-        const response = await fetch(`https://opentdb.com/api.php?amount=3&category=${generateRandomCategory()}&difficulty=easy&type=multiple`);
-        const results = (await response.json()).results;
-        console.log("Response #" + i + ":");
-        console.log(results);
+    const response = await fetch('http://localhost:3000/api');
+    const data = await response.json();
 
-        if (results.length == 0) {
-            i--;
-            await delay(6000);
-            continue;
-        }
+    cards = data.slice(0, columns).map(unit => {
+        const difficulties = ['easy', 'medium', 'hard'];
 
-        questions.push(results.map(result => ({
-            type: result.type,
-            difficulty: result.difficulty,
-            category: result.category,
-            question: result.question,
-            correctAnswer: result.correct_answer,
-            incorrectAnswers: result.incorrect_answers
-        })));
-        
-        if (i < columns - 1) {
-            await delay(6000);
-        }
-    }
+        return difficulties.map(difficulty => {
+            const questionGroup = unit.questions.find(q => q.difficulty === difficulty);
+            const card = questionGroup?.cards?.[0];
 
-    console.log("questions:");
-    console.log(questions);
+            return {
+                category: unit.unit,
+                difficulty,
+                question: card?.question ?? 'No question available',
+                answer: card?.answer ?? 'No answer available',
+                points: difficulty == 'easy' ? 100
+                    : difficulty == 'medium' ? 200
+                    : difficulty == 'hard' ? 300
+                    : ''
+            };
+        });
+    });
 }
 
 function displayQuestionsTable() {
@@ -43,35 +36,32 @@ function displayQuestionsTable() {
     const headerRow = document.createElement("tr");
     for (let i = 0; i < columns; i++) {
         const th = document.createElement("th");
-        th.textContent = questions[i][0].category;
+        th.textContent = cards[i]?.[0]?.category;
         headerRow.appendChild(th);
     }
     thead.appendChild(headerRow);
 
-    questions.forEach(questionsColumn => {
-        const tr = document.createElement("tr");
+    for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+        const tr = document.createElement('tr');
 
-        questionsColumn.forEach(question => {
-            const td = document.createElement("td");
+        for (let colIndex = 0; colIndex < columns; colIndex++) {
+            const question = cards[colIndex]?.[rowIndex];
+            const td = document.createElement('td');
 
-            switch(question.difficulty) {
-                case "easy":
-                    td.textContent = 100;
-                    break;
-                case "medium":
-                    td.textContent = 200;
-                    break;
-                case "hard":
-                    td.textContent = 300;
-                    break;
+            if (question) {
+                td.textContent = question.points;
+                td.dataset.column = String(colIndex);
+                td.dataset.row = String(rowIndex);
+                td.addEventListener('click', displayQuestion);
+            } else {
+                td.textContent = '';
             }
 
-            td.addEventListener('click', displayQuestion);
             tr.appendChild(td);
-        });
+        }
 
         tbody.appendChild(tr);
-    });
+    }
 
     table.appendChild(thead);
     table.appendChild(tbody);
@@ -79,28 +69,61 @@ function displayQuestionsTable() {
 }
 
 function displayQuestion(event) {
-    const modal = document.createElement('div');
-    const modalContent = document.createElement('div');
-
-    modal.classList.add('modal');
-    modalContent.classList.add('modal-content');
-
-    modal.append(modalContent);
-    document.body.append(modal);
-
     const cell = event.target;
-    const cellRow = cell.closest('tr').rowIndex;
-    const cellColumn = cell.cellIndex;
-    console.log(`cell row: ${cellRow}, cell column: ${cellColumn}`);
-}
+    const col = Number(cell.dataset.column);
+    const row = Number(cell.dataset.row);
+    const question = cards[col]?.[row];
 
-function generateRandomCategory() {
-    const min = 1, max = 24;
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+    if (!question) {
+        return;
+    }
 
-function delay(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
+    const card = document.createElement('div');
+    const titleBar = document.createElement('div');
+    const cardContent = document.createElement('div');
+
+    card.classList.add('card');
+
+    // -- Set up title bar --
+
+    titleBar.classList.add('card-title-bar');
+
+    const continueKey = document.createElement('h2');
+    continueKey.innerHTML = `Continue <kbd>ESC</kbd>`;
+
+    const title = document.createElement('h2');
+    title.textContent = `${question.category} for ${question.points}`;
+
+    const revealAnswerKey = document.createElement('h2');
+    revealAnswerKey.innerHTML = `Reveal Answer <kbd>SPACE</kbd>`;
+
+    // -- Set up content --
+
+    cardContent.classList.add('card-content');
+
+    const questionText = document.createElement('p');
+    questionText.innerText = question.question;
+
+    const answerText = document.createElement('p');
+    answerText.textContent = `Answer: ${question.answer}`;
+    
+    // -- Set up keyboard event listener --
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            card.style.animation = 'fadeOut 0.5s ease-out forwards';
+            setTimeout(() => {
+                card.remove();
+            }, 500);
+        } else if (e.key === ' ') {
+            cardContent.appendChild(answerText);
+        }
+    });
+
+    titleBar.append(continueKey, title, revealAnswerKey);
+    cardContent.appendChild(questionText);
+    card.append(titleBar, cardContent);
+    document.body.appendChild(card);
+    card.style.opacity = '1';
 }
 
 async function playJeopardyGame() {
