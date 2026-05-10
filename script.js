@@ -1,10 +1,19 @@
 const rows = 3;
 const columns = 7;
 
+let users = [];
 let cards = [];
 
+const host = window.location.host;
+const socket = io(host);
+
+socket.on('updated users', (updatedUsers) => {
+    users = updatedUsers;
+    displayScores();
+});
+
 async function fetchQuestions() {
-    const response = await fetch('http://localhost:3000/api');
+    const response = await fetch(`http://${host}/api`);
     const data = await response.json();
 
     cards = data.slice(0, columns).map(unit => {
@@ -129,6 +138,21 @@ function displayQuestion(event) {
 async function playJeopardyGame() {
     await fetchQuestions();
     displayQuestionsTable();
+}
+
+function displayScores() {
+    const scoreboard = document.getElementById('scoreboard');
+    scoreboard.innerHTML = '';
+
+    for (const user of users) {
+        const name = user?.name ?? "Anonymous Player";
+        const score = user?.score ?? 0;
+
+        const scoreCard = document.createElement('div');
+        scoreCard.classList.add('score-card');
+        scoreCard.textContent = `${name}: ${score} points`;
+        scoreboard.appendChild(scoreCard);
+    }
 }
 
 window.addEventListener('load', playJeopardyGame);

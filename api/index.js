@@ -1,8 +1,5 @@
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
 const api = express();
-
-api.use(cors());
 
 const data = [
     {
@@ -397,4 +394,4 @@ api.get('/', (req, res) => {
     res.json(data);
 });
 
-module.exports = api;
+export { api };

@@ -75,3 +75,24 @@ kbd {
     font-size: 1.75em;
     line-height: 2;
 }
+
+#scoreboard {
+    z-index: 999;
+    position: fixed;
+    bottom: 1em;
+    left: 0;
+    right: 0;
+    gap: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-card {
+    background-color: var(--white);
+    color: var(--text-black);
+    border: var(--ui-border);
+    border-radius: 5px;
+    padding: 0.5em 1em;
+}
