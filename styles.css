@@ -96,3 +96,72 @@ kbd {
     border-radius: 5px;
     padding: 0.5em 1em;
 }
+
+.input {
+    position: relative;
+    margin: 1.5em auto;
+    width: 100%;
+    max-width: 280px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.input input {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    width: 100%;
+    border: 0;
+    padding: 20px 12px 8px 12px;
+    height: 56px;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text-black);
+    transition: all 0.15s ease;
+    background: rgba(28, 40, 51, 0.05);
+}
+
+.input input:hover {
+    background: rgba(28, 40, 51, 0.08);
+}
+
+.input input:focus {
+    background: rgba(28, 40, 51, 0.05);
+    outline: none;
+    box-shadow: inset 0 -2px 0 var(--blue);
+}
+
+.input input:focus + .label,
+.input input:not(:placeholder-shown) + .label {
+    color: var(--blue);
+    transform: translate3d(0, -30px, 0) scale(0.75);
+}
+
+.label {
+    position: absolute;
+    top: 1px;
+    left: 12px;
+    font-size: 16px;
+    color: rgba(28, 40, 51, 0.6);
+    font-weight: 500;
+    transform-origin: 0 0;
+    transform: translate3d(0, 0, 0);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.focus-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.15s ease;
+}
+
+.input input:focus + .label + .focus-bg {
+    transform: scaleX(1);
+}

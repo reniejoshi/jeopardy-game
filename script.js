@@ -113,11 +113,33 @@ function displayQuestion(event) {
     const questionText = document.createElement('p');
     questionText.innerText = question.question;
 
+    const labelContainer = document.createElement('label');
+    labelContainer.setAttribute('for', 'input');
+    labelContainer.classList.add('input');
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'input';
+    input.setAttribute('placeholder', '\u00A0');
+
+    const labelTextSpan = document.createElement('span');
+    labelTextSpan.classList.add('label');
+    labelTextSpan.textContent = 'Your Answer';
+
+    const focusBgSpan = document.createElement('span');
+    focusBgSpan.classList.add('focus-bg');
+
+    labelContainer.append(input, labelTextSpan, focusBgSpan);
+
     const answerText = document.createElement('p');
     answerText.textContent = `Answer: ${question.answer}`;
     
     // -- Set up keyboard event listener --
     document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT') {
+            return;
+        }
+
         if (e.key === 'Escape') {
             card.style.animation = 'fadeOut 0.5s ease-out forwards';
             setTimeout(() => {
@@ -129,7 +151,7 @@ function displayQuestion(event) {
     });
 
     titleBar.append(continueKey, title, revealAnswerKey);
-    cardContent.appendChild(questionText);
+    cardContent.append(questionText, labelContainer);
     card.append(titleBar, cardContent);
     document.body.appendChild(card);
     card.style.opacity = '1';
