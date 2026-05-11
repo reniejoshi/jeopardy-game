@@ -1,3 +1,6 @@
+import Fuse from 'fuse.js';
+import { io } from 'socket.io-client';
+
 const rows = 3;
 const columns = 7;
 
@@ -136,8 +139,23 @@ function displayQuestion(event) {
     
     // -- Set up keyboard event listener --
     document.addEventListener('keydown', (e) => {
-        if (e.target.tagName === 'INPUT') {
-            return;
+        if (e.target.tagName == 'INPUT') {
+            if (e.key === 'Enter') {
+                const userAnswer = input.value.trim();
+                const correctAnswer = question.answer;
+
+                const fuse = new Fuse([correctAnswer], { includeScore: true });
+                const result = fuse.search(userAnswer)[0];
+
+                if (result && result.score < 0.8) {
+                    alert(`Correct! The match was ${result.score}`);
+                    // Update user score and scoreboard
+                } else {
+                    alert(`Incorrect! The correct answer was: ${correctAnswer}. The match was ${result.score}`);
+                }
+            } else {
+                return;
+            }
         }
 
         if (e.key === 'Escape') {
