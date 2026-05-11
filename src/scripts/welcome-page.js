@@ -7,5 +7,5 @@ startButton.addEventListener('click', startGame);
 function startGame() {
     socket.emit('add user', nameInput.value);
 
-    window.location.href = 'game-page.html';
+    window.location.href = './src/game-page.html';
 }

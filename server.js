@@ -1,5 +1,5 @@
-import { api } from './api/index.js';
-import { User } from './user.js';
+import { api } from './src/api/index.js';
+import { User } from './src/scripts/user.js';
 
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
