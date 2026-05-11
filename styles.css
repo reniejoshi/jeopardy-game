@@ -97,17 +97,16 @@ kbd {
     padding: 0.5em 1em;
 }
 
-.inp {
+.input {
     position: relative;
     margin: 1.5em auto;
     width: 100%;
     max-width: 280px;
     border-radius: 10px;
     overflow: hidden;
-    background-color: rgba(245, 245, 245, 0.95);
 }
 
-.inp input {
+.input input {
     -webkit-appearance: none;
     appearance: none;
     box-sizing: border-box;
@@ -122,25 +121,25 @@ kbd {
     background: rgba(28, 40, 51, 0.05);
 }
 
-.inp input:hover {
+.input input:hover {
     background: rgba(28, 40, 51, 0.08);
 }
 
-.inp input:focus {
+.input input:focus {
     background: rgba(28, 40, 51, 0.05);
     outline: none;
     box-shadow: inset 0 -2px 0 var(--blue);
 }
 
-.inp input:focus + .label,
-.inp input:not(:placeholder-shown) + .label {
+.input input:focus + .label,
+.input input:not(:placeholder-shown) + .label {
     color: var(--blue);
-    transform: translate3d(0, -14px, 0) scale(0.75);
+    transform: translate3d(0, -30px, 0) scale(0.75);
 }
 
 .label {
     position: absolute;
-    top: 18px;
+    top: 5px;
     left: 12px;
     font-size: 16px;
     color: rgba(28, 40, 51, 0.6);

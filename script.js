@@ -1,5 +1,5 @@
-import Fuse from 'fuse.js';
 import { io } from 'socket.io-client';
+import { pipeline, cos_sim } from '@huggingface/transformers';
 
 const rows = 3;
 const columns = 7;
@@ -7,8 +7,7 @@ const columns = 7;
 let users = [];
 let cards = [];
 
-const host = window.location.host;
-const socket = io(host);
+const socket = io();
 
 socket.on('updated users', (updatedUsers) => {
     users = updatedUsers;
@@ -16,7 +15,7 @@ socket.on('updated users', (updatedUsers) => {
 });
 
 async function fetchQuestions() {
-    const response = await fetch(`http://${host}/api`);
+    const response = await fetch('/api');
     const data = await response.json();
 
     cards = data.slice(0, columns).map(unit => {
@@ -137,25 +136,20 @@ function displayQuestion(event) {
     const answerText = document.createElement('p');
     answerText.textContent = `Answer: ${question.answer}`;
     
-    // -- Set up keyboard event listener --
+    input.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') {
+            return;
+        }
+
+        const userAnswer = input.value.trim().toLowerCase();
+        const correctAnswer = question.answer.trim().toLowerCase();
+
+        checkAccuracy(userAnswer, correctAnswer);
+    });
+
     document.addEventListener('keydown', (e) => {
-        if (e.target.tagName == 'INPUT') {
-            if (e.key === 'Enter') {
-                const userAnswer = input.value.trim();
-                const correctAnswer = question.answer;
-
-                const fuse = new Fuse([correctAnswer], { includeScore: true });
-                const result = fuse.search(userAnswer)[0];
-
-                if (result && result.score < 0.8) {
-                    alert(`Correct! The match was ${result.score}`);
-                    // Update user score and scoreboard
-                } else {
-                    alert(`Incorrect! The correct answer was: ${correctAnswer}. The match was ${result.score}`);
-                }
-            } else {
-                return;
-            }
+        if (e.target === input) {
+            return;
         }
 
         if (e.key === 'Escape') {
@@ -194,5 +188,25 @@ function displayScores() {
         scoreboard.appendChild(scoreCard);
     }
 }
+
+async function checkAccuracy(userAnswer, correctAnswer) {
+    if (!userAnswer || !correctAnswer) return;
+
+    const extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+
+    const output1 = await extractor(correctAnswer, { pooling: 'mean', normalize: true });
+    const output2 = await extractor(userAnswer, { pooling: 'mean', normalize: true });
+
+    // Closer to 1 means more similar
+    const similarity = cos_sim(output1.data, output2.data);
+ 
+    if (similarity >= 0.8) {
+        console.log("Correct! Similarity: " + similarity);
+    } else {
+        console.log("Incorrect. Similarity: " + similarity);
+    }
+}
+
+checkAccuracy();
 
 window.addEventListener('load', playJeopardyGame);

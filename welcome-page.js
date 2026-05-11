@@ -1,7 +1,4 @@
-import { User } from './user.js';
-
-const host = window.location.host;
-const socket = io(host);
+const socket = io();
 
 const nameInput = document.getElementById('name-input');
 const startButton = document.getElementById('start-button');
