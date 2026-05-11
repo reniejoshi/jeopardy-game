@@ -184,7 +184,16 @@ function displayScores() {
 
         const scoreCard = document.createElement('div');
         scoreCard.classList.add('score-card');
-        scoreCard.textContent = `${name}: ${score} points`;
+
+        const nameP = document.createElement('p');
+        nameP.textContent = name;
+        nameP.classList.add('name')
+
+        const scoreP = document.createElement('p');
+        scoreP.textContent = score;
+        scoreP.classList.add('score');
+
+        scoreCard.append(nameP, scoreP);
         scoreboard.appendChild(scoreCard);
     }
 }

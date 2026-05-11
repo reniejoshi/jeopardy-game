@@ -94,7 +94,25 @@ kbd {
     color: var(--text-black);
     border: var(--ui-border);
     border-radius: 5px;
-    padding: 0.5em 1em;
+    padding: 0.5em;
+    width: 6em;
+    height: 5em;
+    text-align: center;
+    justify-content: center;
+}
+
+.score-card .name {
+    color: #000;
+    font-size: 1.5em;
+}
+
+.score-card .score {
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background-color: var(--blue);
+    height: 1.5em;
+    font-size: 1.5em;
 }
 
 .input {
