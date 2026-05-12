@@ -1,5 +1,4 @@
 import { socket } from './socket.js';
-import { io } from 'socket.io-client';
 import { pipeline, cos_sim } from '@huggingface/transformers';
 
 const rows = 3;
