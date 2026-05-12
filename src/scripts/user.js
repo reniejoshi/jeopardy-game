@@ -1,6 +1,7 @@
 export class User {
-    constructor(name) {
+    constructor(name, token) {
         this.name = name;
+        this.token = token;
         this.score = 0;
     }
 

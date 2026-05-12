@@ -10,6 +10,7 @@ let cards = [];
 
 socket.on('updated users', (updatedUsers) => {
     users = updatedUsers;
+    console.log('updated users', users);
     displayScores();
 });
 
@@ -135,7 +136,7 @@ function displayQuestion(event) {
     const answerText = document.createElement('p');
     answerText.textContent = `Answer: ${question.answer}`;
     
-    input.addEventListener('keydown', (e) => {
+    input.addEventListener('keydown', async (e) => {
         if (e.key !== 'Enter') {
             return;
         }
@@ -143,7 +144,9 @@ function displayQuestion(event) {
         const userAnswer = input.value.trim().toLowerCase();
         const correctAnswer = question.answer.trim().toLowerCase();
 
-        checkAccuracy(userAnswer, correctAnswer);
+        const accuracy = await checkAccuracy(userAnswer, correctAnswer);
+
+        socket.emit('update user score', accuracy == "Correct!" ? question.points : -question.points, localStorage.getItem("user_token"));
     });
 
     document.addEventListener('keydown', (e) => {
@@ -209,12 +212,10 @@ async function checkAccuracy(userAnswer, correctAnswer) {
     const similarity = cos_sim(output1.data, output2.data);
  
     if (similarity >= 0.8) {
-        console.log("Correct! Similarity: " + similarity);
+        return "Correct!";
     } else {
-        console.log("Incorrect. Similarity: " + similarity);
+        return "Incorrect";
     }
 }
-
-checkAccuracy();
 
 window.addEventListener('load', playJeopardyGame);

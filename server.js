@@ -1,5 +1,6 @@
 import { api } from './src/api/index.js';
 import { User } from './src/scripts/user.js';
+import jwt from 'jsonwebtoken';
 
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -28,16 +29,41 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 4000;
 
 let users = [];
+let publicUsers = [];
 
 io.on('connection', (socket) => {
-    socket.emit('updated users', users);
+    socket.emit('updated users', publicUsers);
 
     socket.on('add user', (name) => {
-        const user = new User(name);
+        const token = jwt.sign({ username: name}, 'secret');
+        console.log("your token", token);
+        socket.emit('your token', token);
+
+        const user = new User(name, token);
         users.push(user);
-        io.emit('updated users', users);
+
+        updatePublicUsers();
+
+        io.emit('updated users', publicUsers);
+    });
+
+    socket.on('update user score', (points, token) => {
+        const decoded = jwt.verify(token, 'secret');
+    
+        const currentUser = users.find(user => user.name === decoded.username);
+
+        if (currentUser) {
+            currentUser.updateScore(points);
+            updatePublicUsers();
+
+            io.emit('updated users', publicUsers);
+        }
     });
 });
+
+function updatePublicUsers() {
+    publicUsers = users.map(user => ({ name: user.name, score: user.score}));
+}
 
 game.use('/api', api);
 game.use(express.static("."));
