@@ -1,4 +1,4 @@
-const socket = io();
+import { socket } from './socket.js';
 
 const nameInput = document.getElementById('name-input');
 const startButton = document.getElementById('start-button');

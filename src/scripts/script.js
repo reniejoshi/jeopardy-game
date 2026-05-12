@@ -1,3 +1,4 @@
+import { socket } from './socket.js';
 import { io } from 'socket.io-client';
 import { pipeline, cos_sim } from '@huggingface/transformers';
 
@@ -6,8 +7,6 @@ const columns = 7;
 
 let users = [];
 let cards = [];
-
-const socket = io();
 
 socket.on('updated users', (updatedUsers) => {
     users = updatedUsers;
