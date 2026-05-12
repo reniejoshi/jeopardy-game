@@ -114,23 +114,16 @@ function displayQuestion(event) {
     const questionText = document.createElement('p');
     questionText.innerText = question.question;
 
-    const labelContainer = document.createElement('label');
-    labelContainer.setAttribute('for', 'input');
-    labelContainer.classList.add('input');
+    const inputContainer = document.createElement('label');
+    inputContainer.setAttribute('for', 'input');
+    inputContainer.classList.add('input-container');
 
     const input = document.createElement('input');
     input.type = 'text';
     input.id = 'input';
-    input.setAttribute('placeholder', '\u00A0');
+    input.placeholder = 'Your Answer';
 
-    const labelTextSpan = document.createElement('span');
-    labelTextSpan.classList.add('label');
-    labelTextSpan.textContent = 'Your Answer';
-
-    const focusBgSpan = document.createElement('span');
-    focusBgSpan.classList.add('focus-bg');
-
-    labelContainer.append(input, labelTextSpan, focusBgSpan);
+    inputContainer.append(input);
 
     const answerText = document.createElement('p');
     answerText.textContent = `Answer: ${question.answer}`;
@@ -144,6 +137,17 @@ function displayQuestion(event) {
         const correctAnswer = question.answer.trim().toLowerCase();
 
         const accuracy = await checkAccuracy(userAnswer, correctAnswer);
+
+        const accuracyFeedback = document.createElement('span');
+        accuracyFeedback.classList.remove("correct-answer", "incorrect-answer");
+        accuracyFeedback.classList.add("accuracy-feedback", accuracy == "Correct!" ? "correct-answer" : "incorrect-answer");
+        accuracyFeedback.textContent = accuracy;
+        inputContainer.prepend(accuracyFeedback);
+
+        input.blur();
+        input.classList.remove("correct-answer", "incorrect-answer");
+        input.classList.add(accuracy == "Correct!" ? "correct-answer" : "incorrect-answer");
+        input.disabled = true;
 
         socket.emit('update user score', accuracy == "Correct!" ? question.points : -question.points, localStorage.getItem("user_token"));
     });
@@ -164,7 +168,7 @@ function displayQuestion(event) {
     });
 
     titleBar.append(continueKey, title, revealAnswerKey);
-    cardContent.append(questionText, labelContainer);
+    cardContent.append(questionText, inputContainer);
     card.append(titleBar, cardContent);
     document.body.appendChild(card);
     card.style.opacity = '1';

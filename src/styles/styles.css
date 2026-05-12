@@ -115,7 +115,7 @@ kbd {
     font-size: 1.5em;
 }
 
-.input {
+.input-container {
     position: relative;
     margin: 1.5em auto;
     width: 100%;
@@ -124,13 +124,14 @@ kbd {
     overflow: hidden;
 }
 
-.input input {
+.input-container input {
+    margin-top: 30px;
     -webkit-appearance: none;
     appearance: none;
     box-sizing: border-box;
-    width: 100%;
+    width: 98%;
     border: 0;
-    padding: 20px 12px 8px 12px;
+    padding: 15px 12px;
     height: 56px;
     font-size: 16px;
     font-weight: 400;
@@ -139,47 +140,40 @@ kbd {
     background: rgba(28, 40, 51, 0.05);
 }
 
-.input input:hover {
+.input-container input:hover {
     background: rgba(28, 40, 51, 0.08);
 }
 
-.input input:focus {
+.input-container input:focus {
     background: rgba(28, 40, 51, 0.05);
     outline: none;
     box-shadow: inset 0 -2px 0 var(--blue);
 }
 
-.input input:focus + .label,
-.input input:not(:placeholder-shown) + .label {
-    color: var(--blue);
-    transform: translate3d(0, -30px, 0) scale(0.75);
-}
-
-.label {
+.accuracy-feedback {
     position: absolute;
-    top: 5px;
-    left: 12px;
-    font-size: 16px;
-    color: rgba(28, 40, 51, 0.6);
-    font-weight: 500;
-    transform-origin: 0 0;
-    transform: translate3d(0, 0, 0);
-    transition: all 0.2s ease;
-    pointer-events: none;
+    font-size: 15px;
+    font-weight: 750;
 }
 
-.focus-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.15s ease;
+.accuracy-feedback.correct-answer {
+    color: #6cd2c2 !important;
 }
 
-.input input:focus + .label + .focus-bg {
+.accuracy-feedback.incorrect-answer {
+    color: #e54442 !important;
+}
+
+.input-container input:focus + .label + .focus-bg {
     transform: scaleX(1);
+}
+
+.input-container input.correct-answer {
+    background-color: #ddf4f1 !important;
+    border: 2px solid #6cd2c2 !important;
+}
+
+.input-container input.incorrect-answer {
+    background-color: #f7efef !important;
+    border: 2px solid #e54442 !important;
 }
