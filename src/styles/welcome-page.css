@@ -25,3 +25,39 @@
     border-radius: 10px;
     cursor: pointer;
 }
+
+.snackbar {
+    width: 250px;
+    background-color: var(--white);
+    color: #000;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    animation: snackbarAnimation 3s ease-in-out forwards;
+}
+
+@keyframes snackbarAnimation {
+    0% {
+        bottom: 0px;
+        opacity: 0;
+    }
+
+    15% {
+        bottom: 30px;
+        opacity: 1;
+    }
+  
+    85% {
+        bottom: 30px;
+        opacity: 1;
+    }
+    
+    100% {
+        bottom: 0px;
+        opacity: 0;
+    }
+}

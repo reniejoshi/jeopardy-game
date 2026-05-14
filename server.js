@@ -32,9 +32,14 @@ let users = [];
 let publicUsers = [];
 
 io.on('connection', (socket) => {
-    socket.emit('updated users', publicUsers);
+    socket.emit('updated users', publicUsers); // Not working
 
-    socket.on('add user', (name) => {
+    socket.on('add user', (name, callback) => {
+        if (users.some(user => user.name == name)) {
+            callback({ success: false });
+            return;
+        }
+
         const token = jwt.sign({ username: name}, 'secret');
         console.log("your token", token);
         socket.emit('your token', token);
@@ -45,6 +50,9 @@ io.on('connection', (socket) => {
         updatePublicUsers();
 
         io.emit('updated users', publicUsers);
+
+        callback({ success: true });
+        return;
     });
 
     socket.on('update user score', (points, token) => {

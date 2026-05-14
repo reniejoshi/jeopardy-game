@@ -5,11 +5,28 @@ const startButton = document.getElementById('start-button');
 startButton.addEventListener('click', startGame);
 
 function startGame() {
-    socket.emit('add user', nameInput.value);
-
-    socket.on('your token', (token) => {
-        localStorage.setItem('user_token', token);
+    const name = nameInput.value;
+    let users = [];
+    socket.on('updated users', (updatedUsers) => {
+        users = updatedUsers;
     });
 
-    window.location.href = './src/game-page.html';
+    socket.emit('add user', name, (response) => {
+        if (response.success) {
+            socket.on('your token', (token) => {
+                localStorage.setItem('user_token', token);
+            });
+
+            window.location.href = './src/game-page.html';
+        } else {
+            const snackbar = document.createElement('div');
+            snackbar.classList.add('snackbar');
+            snackbar.textContent = "That username is already taken.";
+            
+            const welcomeContainer = document.querySelector('.welcome-container');
+            document.body.appendChild(snackbar);
+
+            setTimeout(() => snackbar.remove(), 3000);
+        }
+    });
 }
