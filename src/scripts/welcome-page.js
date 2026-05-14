@@ -6,10 +6,6 @@ startButton.addEventListener('click', startGame);
 
 function startGame() {
     const name = nameInput.value;
-    let users = [];
-    socket.on('updated users', (updatedUsers) => {
-        users = updatedUsers;
-    });
 
     socket.emit('add user', name, (response) => {
         if (response.success) {
@@ -23,7 +19,6 @@ function startGame() {
             snackbar.classList.add('snackbar');
             snackbar.textContent = "That username is already taken.";
             
-            const welcomeContainer = document.querySelector('.welcome-container');
             document.body.appendChild(snackbar);
 
             setTimeout(() => snackbar.remove(), 3000);
