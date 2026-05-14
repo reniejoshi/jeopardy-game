@@ -27,6 +27,12 @@ td:hover {
     cursor: pointer;
 }
 
+td.inactive {
+    opacity: 0.1;
+    background-color: #000;
+    cursor: default;
+}
+
 .card {
     position: fixed;
     top: 0;

@@ -80,6 +80,9 @@ function displayQuestionsTable() {
 
 function displayQuestion(event) {
     const cell = event.target;
+    cell.removeEventListener('click', displayQuestion);
+    cell.classList.add('inactive');
+
     const col = Number(cell.dataset.column);
     const row = Number(cell.dataset.row);
     const question = cards[col]?.[row];
